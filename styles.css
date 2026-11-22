@@ -69,6 +69,60 @@ html, body {
   background: #000000;
 }
 
+/* Floating Minimal Browser Fullscreen Button */
+.browser-fullscreen-btn {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  z-index: 500;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, color 0.18s ease;
+  outline: none;
+}
+
+.browser-fullscreen-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  transform: scale(1.06);
+}
+
+.browser-fullscreen-btn:active {
+  transform: scale(0.92);
+}
+
+.browser-fullscreen-btn svg {
+  display: block;
+  pointer-events: none;
+}
+
+.browser-fullscreen-btn[data-fullscreen="true"] .icon-expand {
+  display: none !important;
+}
+
+.browser-fullscreen-btn[data-fullscreen="true"] .icon-collapse {
+  display: block !important;
+}
+
+.browser-fullscreen-btn:not([data-fullscreen="true"]) .icon-expand {
+  display: block !important;
+}
+
+.browser-fullscreen-btn:not([data-fullscreen="true"]) .icon-collapse {
+  display: none !important;
+}
+
 /* Frameless, 0-Radius Phone Viewport */
 .phone-viewport-wrap {
   position: relative;

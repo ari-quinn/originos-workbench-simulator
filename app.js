@@ -21,6 +21,7 @@
   const ctxBlockBottom = document.getElementById('ctx-block-bottom');
   const popoverBackdrop = document.getElementById('wb-popover-backdrop');
   const fullscreenExitBtn = document.getElementById('fullscreen-exit-btn');
+  const browserFullscreenBtn = document.getElementById('browser-fullscreen-btn');
 
   let currentLayout = 'rail'; // 'rail' | 'top' | 'fullscreen'
   let lastWorkbenchLayout = 'rail';
@@ -39,6 +40,51 @@
   }
   window.addEventListener('resize', updateViewportScale);
   updateViewportScale();
+
+  function isBrowserFullscreen() {
+    return Boolean(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement
+    );
+  }
+
+  function syncFullscreenBtnState() {
+    if (!browserFullscreenBtn) return;
+    const isFull = isBrowserFullscreen();
+    browserFullscreenBtn.dataset.fullscreen = isFull ? 'true' : 'false';
+    browserFullscreenBtn.setAttribute('aria-label', isFull ? 'Exit Fullscreen' : 'Enter Fullscreen');
+    browserFullscreenBtn.title = isFull ? 'Exit Fullscreen' : 'Enter Fullscreen';
+  }
+
+  function toggleBrowserFullscreen() {
+    try {
+      if (isBrowserFullscreen()) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+        else if (document.msExitFullscreen) document.msExitFullscreen();
+      } else {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        else if (root.mozRequestFullScreen) root.mozRequestFullScreen();
+        else if (root.msRequestFullscreen) root.msRequestFullscreen();
+      }
+    } catch (err) {
+      console.warn('Fullscreen request failed:', err);
+    }
+  }
+
+  if (browserFullscreenBtn) {
+    browserFullscreenBtn.addEventListener('click', toggleBrowserFullscreen);
+    document.addEventListener('fullscreenchange', syncFullscreenBtnState);
+    document.addEventListener('webkitfullscreenchange', syncFullscreenBtnState);
+    document.addEventListener('mozfullscreenchange', syncFullscreenBtnState);
+    document.addEventListener('MSFullscreenChange', syncFullscreenBtnState);
+    syncFullscreenBtnState();
+  }
 
   /**
    * Aligns Context Menu horizontally and vertically with the active window's ••• 3 dots
