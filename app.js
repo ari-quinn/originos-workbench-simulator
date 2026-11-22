@@ -28,6 +28,7 @@
   let rafId = null;
   let lastFrameTime = performance.now();
   let morphTimer = null;
+  let morphTimer = null;
 
   const windows = [];
 
@@ -316,6 +317,12 @@
     const targetRec = windows.find((w) => w.id === targetWinId);
     if (!targetRec) return;
 
+    if (morphTimer) {
+      clearTimeout(morphTimer);
+      windows.forEach((w) => w.dom.cardEl.classList.remove('is-morphing'));
+      morphTimer = null;
+    }
+
     if (ctxAnim.isOpen) {
       closeOverlays();
     }
@@ -376,6 +383,17 @@
     fullscreenExitBtn.hidden = true;
     syncSlotHitZones();
 
+    // Smooth UI blur and centered app icon during layout morph
+    const activeRec = windows.find((w) => w.actor.role === 'active');
+    if (activeRec) {
+      activeRec.dom.cardEl.classList.add('is-morphing');
+      if (morphTimer) clearTimeout(morphTimer);
+      morphTimer = setTimeout(() => {
+        windows.forEach((w) => w.dom.cardEl.classList.remove('is-morphing'));
+        morphTimer = null;
+      }, 340);
+    }
+
     windows.forEach((w) => {
       const mode = w.actor.role === 'active' ? 'expand' : 'shrink';
       const pose = computeTargetPose(currentLayout, w.actor.role, w.actor.slot);
@@ -387,6 +405,11 @@
 
   function enterFullscreenMode() {
     closeOverlays();
+    if (morphTimer) {
+      clearTimeout(morphTimer);
+      windows.forEach((w) => w.dom.cardEl.classList.remove('is-morphing'));
+      morphTimer = null;
+    }
     if (currentLayout !== 'fullscreen') {
       lastWorkbenchLayout = currentLayout;
     }
@@ -404,6 +427,11 @@
   }
 
   function exitFullscreenMode() {
+    if (morphTimer) {
+      clearTimeout(morphTimer);
+      windows.forEach((w) => w.dom.cardEl.classList.remove('is-morphing'));
+      morphTimer = null;
+    }
     currentLayout = lastWorkbenchLayout || 'rail';
     phoneStage.dataset.layout = currentLayout;
     fullscreenExitBtn.hidden = true;
