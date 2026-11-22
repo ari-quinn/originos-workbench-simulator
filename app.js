@@ -28,7 +28,6 @@
   let rafId = null;
   let lastFrameTime = performance.now();
   let morphTimer = null;
-  let morphTimer = null;
 
   const windows = [];
 
