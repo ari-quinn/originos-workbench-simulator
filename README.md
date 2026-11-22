@@ -18,3 +18,9 @@ Open `index.html` directly in any modern browser, or run a local static server:
 ```bash
 python -m http.server 8000
 ```
+
+## Credits
+
+- 100% vibe coded.
+- AI Models: Gemini 4 Argon, Gemini 4 Hydrogen, and Gemini 3.8 Flash.
+- Design & Prompts: Ari.
