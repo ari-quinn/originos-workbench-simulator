@@ -107,7 +107,6 @@ html, body {
   object-fit: cover;
   transform: scale(1.14);
   filter: blur(var(--wp-blur)) saturate(1.04);
-  will-change: filter;
 }
 
 .wallpaper-tint {
@@ -155,6 +154,7 @@ html, body {
   perspective: 520px;
   perspective-origin: 215px 470px;
   pointer-events: none;
+  contain: layout style;
 }
 
 /* 3D Tilted Window Card */
@@ -167,14 +167,14 @@ html, body {
   border-radius: 32px;
   overflow: hidden;
   transform-origin: 50% 50%;
-  will-change: transform, height, width, left;
+  will-change: transform;
   pointer-events: auto;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   outline: 1px solid transparent;
   box-shadow:
-    0 20px 44px -10px rgba(10, 7, 5, 0.36),
-    0 4px 14px rgba(0, 0, 0, 0.16);
+    0 12px 28px -6px rgba(0, 0, 0, 0.28),
+    0 3px 8px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   background: #ffffff;
 }
@@ -233,20 +233,9 @@ html, body {
   color: rgba(120, 122, 130, 0.58);
 }
 
-/* Layout-Switch Frosted Glass Blur Veil */
+/* Layout-Switch Frosted Glass Blur Veil (disabled for ultra-high FPS 120Hz transitions) */
 .wb-morph-veil {
-  position: absolute;
-  inset: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.34);
-  backdrop-filter: blur(26px) saturate(1.2);
-  -webkit-backdrop-filter: blur(26px) saturate(1.2);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.22s ease-out;
+  display: none !important;
 }
 
 .wb-window-card[data-theme="dark"] .wb-morph-veil {

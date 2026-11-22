@@ -376,15 +376,6 @@
     fullscreenExitBtn.hidden = true;
     syncSlotHitZones();
 
-    const activeRec = windows.find((w) => w.actor.role === 'active');
-    if (activeRec) {
-      activeRec.dom.veilEl.classList.add('is-visible');
-      if (morphTimer) clearTimeout(morphTimer);
-      morphTimer = setTimeout(() => {
-        windows.forEach((w) => w.dom.veilEl.classList.remove('is-visible'));
-      }, 270);
-    }
-
     windows.forEach((w) => {
       const mode = w.actor.role === 'active' ? 'expand' : 'shrink';
       const pose = computeTargetPose(currentLayout, w.actor.role, w.actor.slot);
@@ -504,14 +495,31 @@
     const { actor, dom } = record;
     const s = actor.state;
     const sc = Math.max(0.05, s.scale);
+    const c = record._cache || (record._cache = {});
 
-    dom.posEl.style.zIndex = String(actor.zOrder);
+    if (c.z !== actor.zOrder) {
+      dom.posEl.style.zIndex = String(actor.zOrder);
+      c.z = actor.zOrder;
+    }
 
-    dom.cardEl.style.width = `${s.cardW.toFixed(1)}px`;
-    dom.cardEl.style.left = `${(-s.cardW * 0.5).toFixed(1)}px`;
-    dom.cardEl.style.height = `${s.cardH.toFixed(1)}px`;
-    dom.cardEl.style.top = `${(-s.cardH * 0.5).toFixed(1)}px`;
-    dom.cardEl.style.borderRadius = `${s.radius.toFixed(1)}px`;
+    // High performance: Only trigger browser layout reflow if dimensions changed significantly
+    if (c.w === undefined || Math.abs(c.w - s.cardW) > 0.25) {
+      dom.cardEl.style.width = `${s.cardW.toFixed(1)}px`;
+      dom.cardEl.style.left = `${(-s.cardW * 0.5).toFixed(1)}px`;
+      c.w = s.cardW;
+    }
+
+    if (c.h === undefined || Math.abs(c.h - s.cardH) > 0.25) {
+      dom.cardEl.style.height = `${s.cardH.toFixed(1)}px`;
+      dom.cardEl.style.top = `${(-s.cardH * 0.5).toFixed(1)}px`;
+      c.h = s.cardH;
+    }
+
+    if (c.rad === undefined || Math.abs(c.rad - s.radius) > 0.25) {
+      dom.cardEl.style.borderRadius = `${s.radius.toFixed(1)}px`;
+      c.rad = s.radius;
+    }
+
     dom.cardEl.style.transform =
       `translate3d(${s.x.toFixed(2)}px, ${s.y.toFixed(2)}px, 0px) ` +
       `scale3d(${sc.toFixed(4)}, ${sc.toFixed(4)}, ${sc.toFixed(4)}) ` +
@@ -524,19 +532,42 @@
     const tl2D = projectCardCorner2D(s.x, s.y, -hw, -hh, s.rx, s.ry);
 
     const mix = Math.max(0, Math.min(1, s.badgeTopMix));
-    // Tucked neatly inside the card corner so it never clips against the left or top screen edges
     const bx = (bl2D.x + 16) * (1 - mix) + (tl2D.x + 15) * mix;
     const by = (bl2D.y - 16) * (1 - mix) + (tl2D.y + 15) * mix;
 
     const badgeAlpha = Math.max(0, Math.min(1, s.badgeOpacity));
-    dom.badgeEl.style.opacity = badgeAlpha.toFixed(3);
-    dom.badgeEl.style.pointerEvents = badgeAlpha > 0.25 ? 'auto' : 'none';
-    dom.badgeEl.style.transform =
-      `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0px) scale(${Math.max(0.1, s.badgeScale).toFixed(3)})`;
+    const badgeVisible = badgeAlpha > 0.01;
+    if (c.bVis !== badgeVisible) {
+      dom.badgeEl.style.display = badgeVisible ? 'block' : 'none';
+      c.bVis = badgeVisible;
+    }
+
+    if (badgeVisible) {
+      dom.badgeEl.style.opacity = badgeAlpha.toFixed(3);
+      const bInteractive = badgeAlpha > 0.25;
+      if (c.bPe !== bInteractive) {
+        dom.badgeEl.style.pointerEvents = bInteractive ? 'auto' : 'none';
+        c.bPe = bInteractive;
+      }
+      dom.badgeEl.style.transform =
+        `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0px) scale(${Math.max(0.1, s.badgeScale).toFixed(3)})`;
+    }
 
     const chromeAlpha = Math.max(0, Math.min(1, s.chromeOpacity));
-    dom.grabberEl.style.opacity = chromeAlpha.toFixed(3);
-    dom.grabberEl.style.pointerEvents = chromeAlpha > 0.4 ? 'auto' : 'none';
+    const chromeVisible = chromeAlpha > 0.01;
+    if (c.cVis !== chromeVisible) {
+      dom.grabberEl.style.display = chromeVisible ? 'flex' : 'none';
+      c.cVis = chromeVisible;
+    }
+
+    if (chromeVisible) {
+      dom.grabberEl.style.opacity = chromeAlpha.toFixed(3);
+      const cInteractive = chromeAlpha > 0.4;
+      if (c.cPe !== cInteractive) {
+        dom.grabberEl.style.pointerEvents = cInteractive ? 'auto' : 'none';
+        c.cPe = cInteractive;
+      }
+    }
   }
 
   function tick(now) {
