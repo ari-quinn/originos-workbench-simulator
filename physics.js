@@ -64,13 +64,13 @@
     top: {
       active: {
         x: 215,
-        y: 560,
+        y: 547,
         scale: 1.0,
         rx: 0,
         ry: 0,
         rz: 0,
         cardW: 394,
-        cardH: 700,
+        cardH: 724,
         radius: 32,
         chromeOpacity: 1,
         badgeOpacity: 0,
