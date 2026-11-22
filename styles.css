@@ -1,0 +1,580 @@
+@font-face {
+  font-family: 'vivo Sans';
+  src: url('./assets/fonts/vivoSansVIET-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'vivo Sans';
+  src: url('./assets/fonts/vivoSansVIET-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'vivo Sans';
+  src: url('./assets/fonts/vivoSansVIET-Demibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'vivo Sans';
+  src: url('./assets/fonts/vivoSansVIET-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --stage-w: 430px;
+  --stage-h: 932px;
+  --card-w: 336px;
+  --card-h: 790px;
+  --wp-blur: 18px;
+  --stage-scale: 1;
+  --font-sans: 'vivo Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'vivo Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000000;
+  color: #18181b;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.studio-shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+}
+
+/* Frameless, 0-Radius Phone Viewport */
+.phone-viewport-wrap {
+  position: relative;
+  width: var(--stage-w);
+  height: var(--stage-h);
+  transform: scale(var(--stage-scale));
+  transform-origin: center center;
+  flex-shrink: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  background: #1a1517;
+}
+
+.phone-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0;
+  isolation: isolate;
+}
+
+/* Blurred Wallpaper Layer */
+.wallpaper-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.wallpaper-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.14);
+  filter: blur(var(--wp-blur)) saturate(1.04);
+  will-change: filter;
+}
+
+.wallpaper-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(24, 18, 20, 0.06) 0%,
+    rgba(18, 13, 15, 0.10) 100%
+  );
+}
+
+/* Fixed Thumbnail Slot Hit Layer (enables ultra-fast spamming on slot areas even when cards are mid-flight) */
+.slot-hit-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.slot-hit-zone {
+  position: absolute;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 14px;
+  outline: none;
+}
+
+/* Workbench Layer */
+.workbench-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+/* Shared Single-Vanishing-Point 3D Stage Container per Window */
+.wb-window-pos {
+  position: absolute;
+  inset: 0;
+  width: var(--stage-w);
+  height: var(--stage-h);
+  perspective: 520px;
+  perspective-origin: 215px 470px;
+  pointer-events: none;
+}
+
+/* 3D Tilted Window Card */
+.wb-window-card {
+  position: absolute;
+  width: var(--card-w);
+  height: var(--card-h);
+  left: calc(var(--card-w) * -0.5);
+  top: calc(var(--card-h) * -0.5);
+  border-radius: 32px;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+  will-change: transform, height, width, left;
+  pointer-events: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  outline: 1px solid transparent;
+  box-shadow:
+    0 20px 44px -10px rgba(10, 7, 5, 0.36),
+    0 4px 14px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  background: #ffffff;
+}
+
+.wb-window-pos[data-role="active"] .wb-window-card {
+  cursor: default;
+}
+
+/* Content Shield on Miniature Windows */
+.wb-thumb-hit-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  background: transparent;
+  cursor: pointer;
+}
+
+.wb-window-pos[data-role="active"] .wb-thumb-hit-shield {
+  display: none;
+}
+
+/* Top 3-Dot Grabber Bar (•••) — Perfectly round geometric circles, zero hover state */
+.wb-top-grabber {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  z-index: 65;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.wb-dots-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 22px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.wb-dots-svg {
+  width: 24px;
+  height: 8px;
+  display: block;
+  overflow: visible;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.wb-window-card[data-theme="light"] .wb-dots-svg {
+  color: rgba(120, 122, 130, 0.58);
+}
+
+/* Layout-Switch Frosted Glass Blur Veil */
+.wb-morph-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(26px) saturate(1.2);
+  -webkit-backdrop-filter: blur(26px) saturate(1.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease-out;
+}
+
+.wb-window-card[data-theme="dark"] .wb-morph-veil {
+  background: rgba(65, 70, 88, 0.42);
+}
+
+.wb-morph-veil.is-visible {
+  opacity: 1;
+}
+
+.wb-morph-veil-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+}
+
+/* Flat 2D App Icon Badge anchored inside miniature window corner */
+.wb-window-badge {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  left: -14px;
+  top: -14px;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 80;
+  pointer-events: auto;
+  cursor: pointer;
+  will-change: transform, opacity;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.26),
+    0 1px 2px rgba(0, 0, 0, 0.16);
+  background: #222;
+}
+
+.wb-window-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ==========================================================================
+   ORIGINOS 7 CONTEXT MENU
+   NOTE: .wb-menu-popover intentionally sets NO transform, opacity, or will-change
+   so that backdrop-filter on .ctx-block-top & .ctx-block-bottom samples the
+   live stage behind it without Chromium backdrop-root isolation!
+   ========================================================================== */
+.wb-popover-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 300;
+  background: transparent;
+}
+
+.wb-menu-popover {
+  position: absolute;
+  top: 122px;
+  left: 106px;
+  width: 284px;
+  z-index: 310;
+  pointer-events: none;
+}
+
+.ctx-block {
+  width: 100%;
+  background: rgba(242, 241, 246, 0.72);
+  backdrop-filter: blur(32px) saturate(180%) contrast(104%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%) contrast(104%);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 0.7px rgba(255, 255, 255, 0.78);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ctx-block-top {
+  border-radius: 21px;
+  transform-origin: 50% 0%;
+}
+
+.ctx-block-bottom {
+  margin-top: 6px;
+  border-radius: 22px;
+  /* Shares the exact same pivot point (50%, 0px relative to menu top) as ctx-block-top */
+  transform-origin: 50% -54px;
+}
+
+.ctx-divider {
+  height: 1px;
+  margin: 0 18px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.wb-menu-item {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  border: none;
+  background: transparent;
+  color: #26262b;
+  font-family: var(--font-sans);
+  font-size: 15.2px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+
+.ctx-block-bottom .wb-menu-item {
+  height: 43px;
+}
+
+.wb-menu-item:active {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.wb-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2b2b30;
+  flex-shrink: 0;
+  width: 19px;
+  height: 19px;
+}
+
+.wb-menu-label {
+  white-space: nowrap;
+}
+
+/* Fullscreen Return Pill */
+.fullscreen-exit-btn {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 380;
+  padding: 7px 16px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(24, 22, 25, 0.72);
+  backdrop-filter: blur(16px);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   WINDOW APP SURFACES
+   1. Settings Device Info — Traced 1:1 from OriginOS 7 vivo X300 Ultra + vivo Sans + Red Bar
+   2. Other Apps — Pure white #ffffff with centered "none"
+   ========================================================================== */
+.app-surface {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-settings-info {
+  width: 100%;
+  height: 100%;
+  background: #f1f1f3;
+  color: #161618;
+  padding: 38px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+}
+
+.settings-info-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 2px 0 0;
+}
+
+.settings-back-icon {
+  color: #18181b;
+  flex-shrink: 0;
+}
+
+.settings-info-title {
+  font-size: 19px;
+  font-weight: 500;
+  color: #161618;
+  letter-spacing: -0.015em;
+}
+
+.origin-banner-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.85 / 1;
+  margin-top: 18px;
+  border-radius: 17px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(70, 35, 10, 0.12);
+  flex-shrink: 0;
+  background: #4e2208;
+}
+
+.origin-banner-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.origin-banner-logo-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18.5%;
+}
+
+.origin-banner-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.18));
+}
+
+.device-model-hero {
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: #161618;
+  margin: 22px 0 0;
+  line-height: 1.12;
+}
+
+.device-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.055);
+  margin: 20px 0;
+  flex-shrink: 0;
+}
+
+.device-specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.spec-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  text-align: right;
+  line-height: 1.26;
+}
+
+.spec-row-multiline {
+  align-items: flex-start;
+}
+
+.spec-val {
+  font-size: 16.5px;
+  font-weight: 500;
+  color: #161618;
+  letter-spacing: -0.01em;
+}
+
+.spec-label-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.spec-label {
+  font-size: 12.6px;
+  font-weight: 400;
+  color: rgba(22, 22, 24, 0.48);
+  white-space: nowrap;
+}
+
+.spec-info-svg {
+  color: #161618;
+  flex-shrink: 0;
+  margin-left: -1px;
+  width: 14px;
+  height: 14px;
+}
+
+.spec-chevron-svg {
+  color: rgba(22, 22, 24, 0.45);
+  flex-shrink: 0;
+  margin-left: 1px;
+}
+
+.spec-red-bar {
+  display: inline-block;
+  width: 3.6px;
+  height: 12.5px;
+  border-radius: 1px;
+  background: #ef444e;
+  flex-shrink: 0;
+}
+
+.app-none-surface {
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-none-text {
+  font-size: 17px;
+  font-weight: 500;
+  color: #8e8e96;
+  letter-spacing: 0.01em;
+}

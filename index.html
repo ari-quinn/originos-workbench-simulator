@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>OriginOS 7 — Origin Workbench Simulator</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="studio-shell">
+    <div class="phone-viewport-wrap">
+      <div id="phone-stage" class="phone-stage" data-layout="rail">
+        <!-- Wallpaper Layer (User's image #2 with Gaussian blur) -->
+        <div class="wallpaper-layer">
+          <img src="./assets/wallpaper.jpg" alt="" class="wallpaper-img" id="wallpaper-img" draggable="false" />
+          <div class="wallpaper-tint"></div>
+        </div>
+
+        <!-- Invisible Fixed Slot Hit Zones (for ultra-fast rapid tapping on fixed rail/bar coordinates even while cards are mid-flight) -->
+        <div id="slot-hit-layer" class="slot-hit-layer" aria-label="Workbench thumbnail slots">
+          <button type="button" class="slot-hit-zone" data-slot="0" aria-label="Slot 1"></button>
+          <button type="button" class="slot-hit-zone" data-slot="1" aria-label="Slot 2"></button>
+          <button type="button" class="slot-hit-zone" data-slot="2" aria-label="Slot 3"></button>
+          <button type="button" class="slot-hit-zone" data-slot="3" aria-label="Slot 4"></button>
+        </div>
+
+        <!-- 3D Workbench Stage: All floating windows live here -->
+        <div id="workbench-layer" class="workbench-layer"></div>
+
+        <!-- Backdrop for closing Context Menu / Sheets -->
+        <div id="wb-popover-backdrop" class="wb-popover-backdrop" hidden></div>
+
+        <!-- OriginOS 7 Context Menu (100% 2-Block Copy of Image #2 + Source Deforming Morph from 3-Dot Origin) -->
+        <div id="wb-menu-popover" class="wb-menu-popover" role="menu" aria-hidden="true">
+          <!-- Block 1: Top Standalone Pill -->
+          <div id="ctx-block-top" class="ctx-block ctx-block-top">
+            <button type="button" class="wb-menu-item" data-action="fullscreen" role="menuitem">
+              <span class="wb-menu-icon">
+                <!-- Exact traced vector icon #1: outer stroked rounded square + inner solid filled rounded square -->
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none">
+                  <rect x="2.8" y="2.8" width="14.4" height="14.4" rx="2.5" stroke="currentColor" stroke-width="1.65" />
+                  <rect x="6.2" y="6.2" width="7.6" height="7.6" rx="1.15" fill="currentColor" />
+                </svg>
+              </span>
+              <span class="wb-menu-label">Switch to full screen</span>
+            </button>
+          </div>
+
+          <!-- Block 2: Bottom Grouped Card (3 items with subtle hairline dividers) -->
+          <div id="ctx-block-bottom" class="ctx-block ctx-block-bottom">
+            <button type="button" class="wb-menu-item" data-action="toggle-layout" role="menuitem">
+              <span class="wb-menu-icon">
+                <!-- Exact traced vector icon #2: outer rounded square + 3 top square dots + bottom stage block -->
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none">
+                  <rect x="2.8" y="2.8" width="14.4" height="14.4" rx="2.5" stroke="currentColor" stroke-width="1.65" />
+                  <rect x="5.5" y="5.5" width="2" height="2" rx="0.4" fill="currentColor" />
+                  <rect x="9" y="5.5" width="2" height="2" rx="0.4" fill="currentColor" />
+                  <rect x="12.5" y="5.5" width="2" height="2" rx="0.4" fill="currentColor" />
+                  <rect x="5.5" y="8.8" width="9" height="5.7" rx="0.9" fill="currentColor" fill-opacity="0.52" />
+                </svg>
+              </span>
+              <span class="wb-menu-label">Switch layout</span>
+            </button>
+
+            <div class="ctx-divider"></div>
+
+            <button type="button" class="wb-menu-item" data-action="replace-app" role="menuitem">
+              <span class="wb-menu-icon">
+                <!-- Exact traced vector icon #3: 2x2 grid of 4 stroked rounded squares -->
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none">
+                  <rect x="3.1" y="3.1" width="5.5" height="5.5" rx="1.4" stroke="currentColor" stroke-width="1.65" />
+                  <rect x="11.4" y="3.1" width="5.5" height="5.5" rx="1.4" stroke="currentColor" stroke-width="1.65" />
+                  <rect x="3.1" y="11.4" width="5.5" height="5.5" rx="1.4" stroke="currentColor" stroke-width="1.65" />
+                  <rect x="11.4" y="11.4" width="5.5" height="5.5" rx="1.4" stroke="currentColor" stroke-width="1.65" />
+                </svg>
+              </span>
+              <span class="wb-menu-label">Replace app</span>
+            </button>
+
+            <div class="ctx-divider"></div>
+
+            <button type="button" class="wb-menu-item" data-action="close-app" role="menuitem">
+              <span class="wb-menu-icon">
+                <!-- Exact traced vector icon #4: clean diagonal cross X -->
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none">
+                  <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="wb-menu-label">Close app</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fullscreen Exit Pill (shown only when a window is expanded to 100% fullscreen) -->
+        <button type="button" id="fullscreen-exit-btn" class="fullscreen-exit-btn" hidden>
+          <span>Back to Origin Workbench</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="./physics.js"></script>
+  <script src="./apps.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

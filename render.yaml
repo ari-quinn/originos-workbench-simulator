@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: originos-workbench-simulator
+    env: static
+    buildCommand: ""
+    staticPublishPath: .
