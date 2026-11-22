@@ -309,6 +309,9 @@
         Object.assign(this.state, this.target);
         Object.assign(this.lead2, this.target);
         Object.assign(this.lead1, this.target);
+        if (this.role === 'thumb' && this.slot !== null) {
+          this.zOrder = 20 - this.slot;
+        }
         return true;
       }
       return false;

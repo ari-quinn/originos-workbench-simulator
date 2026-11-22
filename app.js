@@ -347,8 +347,8 @@
       prevActiveRec.actor.role = 'thumb';
       prevActiveRec.actor.slot = vacatedSlot;
       prevActiveRec.dom.posEl.dataset.role = 'thumb';
-      interactionCounter += 1;
-      prevActiveRec.actor.zOrder = 100 + interactionCounter;
+      // Clean stacking: shrinking card flies slightly above other thumbs (35 - slot) without obstructing active card
+      prevActiveRec.actor.zOrder = 35 - vacatedSlot;
 
       const shrinkPose = computeTargetPose(currentLayout, 'thumb', vacatedSlot);
       prevActiveRec.actor.setTarget(shrinkPose, 'shrink');
@@ -463,6 +463,7 @@
     windows.forEach((w) => {
       if (w !== activeRec && w !== slot0Rec && w.actor.role === 'thumb') {
         w.actor.slot = Math.max(0, w.actor.slot - 1);
+        w.actor.zOrder = 20 - w.actor.slot;
         w.actor.setTarget(computeTargetPose(currentLayout, 'thumb', w.actor.slot), 'shrink');
       }
     });
@@ -471,7 +472,7 @@
     activeRec.actor.role = 'thumb';
     activeRec.actor.slot = 3;
     activeRec.dom.posEl.dataset.role = 'thumb';
-    activeRec.actor.zOrder = 15;
+    activeRec.actor.zOrder = 20 - 3;
 
     const slot3Pose = computeTargetPose(currentLayout, 'thumb', 3);
     activeRec.actor.state.x = currentLayout === 'rail' ? -60 : 440;

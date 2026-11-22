@@ -143,8 +143,6 @@ html, body {
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
 }
 
 /* Shared Single-Vanishing-Point 3D Stage Container per Window */
@@ -156,8 +154,6 @@ html, body {
   perspective: 520px;
   perspective-origin: 215px 470px;
   pointer-events: none;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
 }
 
 /* 3D Tilted Window Card (Mobile GPU stable: zero clipping corruption, zero Z-fighting flicker) */
@@ -174,8 +170,6 @@ html, body {
   pointer-events: auto;
   backface-visibility: visible;
   -webkit-backface-visibility: visible;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   outline: 1px solid transparent;
   box-shadow:
@@ -183,6 +177,8 @@ html, body {
     0 3px 8px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   background: #ffffff;
+  z-index: 1;
+}
 }
 
 .wb-window-pos[data-role="active"] .wb-window-card {
@@ -307,7 +303,7 @@ html, body {
   top: -14px;
   border-radius: 8px;
   overflow: hidden;
-  z-index: 80;
+  z-index: 999; /* Always painted clearly on top of the 3D card */
   pointer-events: auto;
   cursor: pointer;
   will-change: transform, opacity;
