@@ -143,6 +143,8 @@ html, body {
   inset: 0;
   z-index: 60;
   pointer-events: none;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
 /* Shared Single-Vanishing-Point 3D Stage Container per Window */
@@ -154,10 +156,11 @@ html, body {
   perspective: 520px;
   perspective-origin: 215px 470px;
   pointer-events: none;
-  contain: layout style;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
-/* 3D Tilted Window Card */
+/* 3D Tilted Window Card (Mobile GPU stable: zero clipping corruption, zero Z-fighting flicker) */
 .wb-window-card {
   position: absolute;
   width: var(--card-w);
@@ -169,8 +172,11 @@ html, body {
   transform-origin: 50% 50%;
   will-change: transform;
   pointer-events: auto;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
   outline: 1px solid transparent;
   box-shadow:
     0 12px 28px -6px rgba(0, 0, 0, 0.28),
@@ -247,12 +253,12 @@ html, body {
 
 .wb-window-card.is-morphing .wb-app-mount {
   filter: blur(14px);
-  opacity: 0.32;
+  opacity: 0.28;
   transform: scale(0.97);
   pointer-events: none;
 }
 
-/* Layout-Switch Frosted Blur Veil & Centered App Icon (GPU-accelerated, locked 60-120fps) */
+/* Layout-Switch Frosted Blur Veil & Centered App Icon (Mobile GPU safe: no backdrop-filter artifact) */
 .wb-morph-veil {
   position: absolute;
   inset: 0;
@@ -260,9 +266,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.48);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.72);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
@@ -270,7 +274,7 @@ html, body {
 }
 
 .wb-window-card[data-theme="dark"] .wb-morph-veil {
-  background: rgba(30, 32, 40, 0.52);
+  background: rgba(30, 32, 40, 0.76);
 }
 
 .wb-window-card.is-morphing .wb-morph-veil {

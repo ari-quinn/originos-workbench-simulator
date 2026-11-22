@@ -547,10 +547,12 @@
       c.rad = s.radius;
     }
 
-    dom.cardEl.style.transform =
+    const cardTf =
       `translate3d(${s.x.toFixed(2)}px, ${s.y.toFixed(2)}px, 0px) ` +
       `scale3d(${sc.toFixed(4)}, ${sc.toFixed(4)}, ${sc.toFixed(4)}) ` +
       `rotateX(${s.rx.toFixed(2)}deg) rotateY(${s.ry.toFixed(2)}deg) rotateZ(${s.rz.toFixed(2)}deg)`;
+    dom.cardEl.style.transform = cardTf;
+    dom.cardEl.style.webkitTransform = cardTf;
 
     const hw = (s.cardW * 0.5) * sc;
     const hh = (s.cardH * 0.5) * sc;
@@ -576,8 +578,9 @@
         dom.badgeEl.style.pointerEvents = bInteractive ? 'auto' : 'none';
         c.bPe = bInteractive;
       }
-      dom.badgeEl.style.transform =
-        `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0px) scale(${Math.max(0.1, s.badgeScale).toFixed(3)})`;
+      const badgeTf = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0px) scale(${Math.max(0.1, s.badgeScale).toFixed(3)})`;
+      dom.badgeEl.style.transform = badgeTf;
+      dom.badgeEl.style.webkitTransform = badgeTf;
     }
 
     const chromeAlpha = Math.max(0, Math.min(1, s.chromeOpacity));
