@@ -64,13 +64,13 @@
     top: {
       active: {
         x: 215,
-        y: 542,
+        y: 560,
         scale: 1.0,
         rx: 0,
         ry: 0,
         rz: 0,
         cardW: 394,
-        cardH: 736,
+        cardH: 700,
         radius: 32,
         chromeOpacity: 1,
         badgeOpacity: 0,
@@ -78,14 +78,14 @@
         badgeTopMix: 1
       },
       slots: [
-        { x: 61.7, y: 110 },
-        { x: 163.9, y: 110 },
-        { x: 266.1, y: 110 },
-        { x: 368.3, y: 110 }
+        { x: 61.7, y: 106 },
+        { x: 163.9, y: 106 },
+        { x: 266.1, y: 106 },
+        { x: 368.3, y: 106 }
       ],
       thumbScale: 0.260,
       thumbCardW: 336,
-      thumbCardH: 430,
+      thumbCardH: 410,
       thumbRadius: 44,
       thumbAngles: { rx: -22, ry: 0, rz: 0 }
     },
